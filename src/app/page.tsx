@@ -3,8 +3,8 @@ import Link from "next/link";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import Swal from 'sweetalert2'
-
+import Swal from "sweetalert2";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,16 +22,15 @@ export default function Home() {
   const loginOption = {
     username: { required: "Username is Required" },
     password: { required: "Password is Required" },
-  }
+  };
 
   const handleLogin = (data: any) => {
-    if(data){
+    if (data) {
       Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'Berhasil Login',
-        
-      })
+        icon: "success",
+        title: "Success",
+        text: "Berhasil Login",
+      });
     }
   };
 
@@ -43,9 +42,7 @@ export default function Home() {
     <>
       <div className="container w-11/12 xl:w-4/12 mt-32 bg-white m-auto border border-t-gray-300 p-10 rounded-lg shadow-xl">
         <h1 className="text-3xl text-center font-bold">Login</h1>
-        <form action="" 
-                    onSubmit={handleSubmit(handleLogin)}
-        className="mt-5">
+        <form action="" onSubmit={handleSubmit(handleLogin)} className="mt-5">
           <label htmlFor="" className="">
             {/* <span className="block font-semibold text-sm">Username</span> */}
             <input
@@ -56,34 +53,36 @@ export default function Home() {
             />
           </label>
           <div className=" w-full">
-              {errors?.username && (
-                <small className="text-red-500">
-                  {errors.username.message}
-                </small>
-              )}
+            {errors?.username && (
+              <small className="text-red-500">{errors.username.message}</small>
+            )}
           </div>
           <label htmlFor="" className="flex mt-4">
             {/* <span className="block font-semibold mt-2 text-sm">Password</span> */}
             <input
               type={showPassword ? "text" : "password"}
               className="w-full p-2 block border outline-none border-r-0 border-sky-400 rounded-r-none rounded-md"
-
               placeholder="Password"
               {...register("password", loginOption.password)}
             />
-            <span onClick={handleTogglePassword} className="border rounded-r-md border-l-0 border-sky-400 rounded-sm pt-2">
-              <RemoveRedEyeIcon  fontSize="small" className="mr-2"/>
+            <span
+              onClick={handleTogglePassword}
+              className="border rounded-r-md border-l-0 border-sky-400 rounded-sm pt-2"
+            >
+              {showPassword ? (
+                <VisibilityOffIcon fontSize="small" className="mr-2" />
+                ) : (
+                <RemoveRedEyeIcon fontSize="small" className="mr-2" />
+              )}
             </span>
           </label>
           <div className=" w-full">
-              {errors?.password && (
-                <small className="text-red-500">
-                  {errors.password.message}
-                </small>
-              )}
-            </div>
-          <button className="mt-4 bg-sky-400 w-4/12 rounded-lg p-2 text-white " >
-          {/* <button className="mt-4 bg-sky-400 w-full rounded-lg p-2 text-white " > */}
+            {errors?.password && (
+              <small className="text-red-500">{errors.password.message}</small>
+            )}
+          </div>
+          <button className="mt-4 bg-sky-400 w-4/12 rounded-lg p-2 text-white ">
+            {/* <button className="mt-4 bg-sky-400 w-full rounded-lg p-2 text-white " > */}
             Login
           </button>
         </form>

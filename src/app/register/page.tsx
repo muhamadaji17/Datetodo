@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useForm } from "react-hook-form";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -181,7 +182,11 @@ export default function Register() {
               onClick={handleTogglePassword}
               className="border rounded-r-md border-l-0 border-sky-400 rounded-sm pt-2"
             >
-              <RemoveRedEyeIcon fontSize="small" className="mr-2" />
+              {showPassword ? (
+                <VisibilityOffIcon fontSize="small" className="mr-2" />
+                ) : (
+                <RemoveRedEyeIcon fontSize="small" className="mr-2" />
+              )}{" "}
             </span>
           </label>
           <div className=" w-full">
