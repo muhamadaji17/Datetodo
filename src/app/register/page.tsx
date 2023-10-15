@@ -76,6 +76,7 @@ export default function Register() {
       }
     }
   };
+
   return (
     <div className="container w-80 xl:w-5/12 mb-7 mt-7 pt-8 pb-8 border xl:mt-5 xl:mb-5 border-t-gray-300 bg-white m-auto rounded-lg shadow-lg">
       <h1 className="text-lg font-semibold text-center">Register</h1>

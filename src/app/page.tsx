@@ -1,13 +1,17 @@
 "use client";
 import Link from "next/link";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { useRouter } from "next/navigation";
+
 
 export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
+  
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   type Values = {
     username: string;
@@ -24,15 +28,30 @@ export default function Home() {
     password: { required: "Password is Required" },
   };
 
+  const router = useRouter()
+
   const handleLogin = (data: any) => {
-    if (data) {
+    console.log(data.username)
+    if (data.username == 'admin' && data.password == 'admin') {
       Swal.fire({
         icon: "success",
         title: "Success",
         text: "Berhasil Login",
       });
+      router.push('dashboard')
+    }else{
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Gagal Login",
+      })
+      if (formRef.current) {
+        formRef.current.reset();
+      }
     }
+    // data.username = ''
   };
+
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -42,13 +61,14 @@ export default function Home() {
     <>
       <div className="container w-11/12 xl:w-4/12 mt-32 bg-white m-auto border border-t-gray-300 p-10 rounded-lg shadow-xl">
         <h1 className="text-3xl text-center font-bold">Login</h1>
-        <form action="" onSubmit={handleSubmit(handleLogin)} className="mt-5">
-          <label htmlFor="" className="">
+        <form ref={formRef} onSubmit={handleSubmit(handleLogin)} className="mt-5">
+          <label  className="">
             {/* <span className="block font-semibold text-sm">Username</span> */}
             <input
               type="text"
               className="w-full p-2 block  border border-sky-400 rounded-md outline-none"
               placeholder="Username"
+              id="username"
               {...register("username", loginOption.username)}
             />
           </label>
@@ -57,10 +77,11 @@ export default function Home() {
               <small className="text-red-500">{errors.username.message}</small>
             )}
           </div>
-          <label htmlFor="" className="flex mt-4">
+          <label  className="flex mt-4">
             {/* <span className="block font-semibold mt-2 text-sm">Password</span> */}
             <input
               type={showPassword ? "text" : "password"}
+              id="password"
               className="w-full p-2 block border outline-none border-r-0 border-sky-400 rounded-r-none rounded-md"
               placeholder="Password"
               {...register("password", loginOption.password)}

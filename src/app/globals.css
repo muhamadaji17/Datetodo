@@ -29,4 +29,9 @@ body {
 body {
   background-color: #FFFFFF;
 }
-
+.carousel .legend {
+  display: none;
+}
+.carousel .total {
+  display: none;
+}
