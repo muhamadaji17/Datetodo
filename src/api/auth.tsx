@@ -1,9 +1,9 @@
-import axios from "@/config/endPoint"
+import axios from "@/config/endPoint";
 
-const Login = (data:any) => {
-    return axios.post('login', data)
-}
+const Login = () => {
+  return axios.post("/Auth/Login");
+};
 
 export default {
-    Login
-}
+  Login,
+};

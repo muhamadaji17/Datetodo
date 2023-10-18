@@ -2,23 +2,25 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { createLogger } from "redux-logger";
 import createSagaMiddleware from "redux-saga";
 import LoginReducer from "../auth/reducer/authReducer";
-// import rootSaga from "@/redux/sagaGlobal";
+import DashboardReducer from "@/redux/dashboard/reducer/Dashboard";
+import rootSaga from "@/redux/sagaGlobal/saga";
 
-
-
-const logger = createLogger()
-const saga = createSagaMiddleware()
+const logger = createLogger();
+const saga = createSagaMiddleware();
 const reducer = combineReducers({
-    LoginReducer
-})
+  // LoginReducer
+  DashboardReducer,
+});
 
 const store = configureStore({
-    reducer,
-    middleware: (getDefaultMiddleware) => 
+  reducer,
+  middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-        serializableCheck: false,
-    }).concat(logger).concat(saga)
-})
-// saga.run(rootSaga)
+      serializableCheck: false,
+    })
+      .concat(logger)
+      .concat(saga),
+});
+saga.run(rootSaga);
 
-export default store
+export default store;
