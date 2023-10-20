@@ -167,10 +167,10 @@ const navbar = () => {
               <Button
                 // key={page}
                 // onClick={() => router.push("/absensi")}
-                onClick={handleCloseNavMenu}
+                onClick={() => router.push("/table")}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                Matkul
+                Table
               </Button>
             </Box>
 

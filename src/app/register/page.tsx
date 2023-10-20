@@ -54,6 +54,7 @@ export default function Register() {
         timer: 1000,
       });
     }
+    console.log(data);
   };
 
   const handleTogglePassword = () => {
@@ -185,7 +186,7 @@ export default function Register() {
             >
               {showPassword ? (
                 <VisibilityOffIcon fontSize="small" className="mr-2" />
-                ) : (
+              ) : (
                 <RemoveRedEyeIcon fontSize="small" className="mr-2" />
               )}{" "}
             </span>

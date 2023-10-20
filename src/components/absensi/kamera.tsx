@@ -2,6 +2,7 @@
 import { useCallback, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import Navbar from "@/components/utils/navbar";
+import Button from "../button";
 
 const Kamera = () => {
   const webcamRef = useRef("");
@@ -52,7 +53,7 @@ const Kamera = () => {
       </div>
       <div>
         <h1>Informasi Lokasi : </h1>
-        {latitude !== null && longitude !== 0 ? (
+        {latitude && longitude ? (
           <div>
             <p>Latitude: {latitude}</p>
             <p>Longitude: {longitude}</p>
