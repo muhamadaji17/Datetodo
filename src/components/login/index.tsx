@@ -1,44 +1,52 @@
-"use client";
-import Link from "next/link";
+import * as React from "react";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import Swal from "sweetalert2";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { useRouter } from "next/navigation";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { REQ_LOGIN } from "@/redux/auth/action/ActionReducer";
-import React from "react";
-// import { setCookie } from "cookies-next";
+import { InputAdornment } from "@mui/material";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
-const Login = () => {
+export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
-
+  const [usernameError, setusernameError] = useState("");
+  const [username, setusername] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [password, setPassword] = useState("");
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  type Values = {
-    username: string;
-    password: string;
-  };
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Values>();
+  let token = "";
+  let expiresIn = "";
+  let status = "";
+  let userId = "";
+  let router = useRouter();
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (username === "") {
+      setusernameError("Username is required");
+    } else {
+      setusernameError(""); // Clear the error when the input is not empty
+    }
 
-  const loginOption = {
-    username: { required: "Username is Required" },
-    password: { required: "Password is Required" },
-  };
-
-  const router = useRouter();
-  // const dispatch = useDispatch();
-
-  const handleLogin = async (data: any) => {
+    if (password === "") {
+      setPasswordError("Password is required");
+    } else {
+      setPasswordError(""); // Clear the error when the input is not empty
+    }
+    const data: any = new FormData(event.currentTarget);
     try {
       const response = await axios.post(
-        "http://103.175.219.184:8001/api/auth/login",
+        `${process.env.API_URL}/api/auth/login`,
         data,
         {
           headers: {
@@ -46,108 +54,133 @@ const Login = () => {
           },
         }
       );
-      // console.log(response);
       if (response) {
         Swal.fire({
           icon: "success",
           title: "Success",
           text: "Berhasil Login",
-          confirmButtonColor: "#00FA9A          ",
+          confirmButtonColor: "#00FA9A",
         });
-        // setCookie("token", response.data.accessToken);
-        sessionStorage.setItem("token", response.data.accessToken);
-        // sessionStorage.setItem("username", data.username);
-        router.push("dashboard");
+        // console.log(response);
+        token = response.data.accessToken;
+        expiresIn = response.data.expiresIn;
+        status = response.data.status;
+        userId = response.data.userId;
+
+        sessionStorage.setItem("xtoken", token);
+        sessionStorage.setItem("expiresIn", expiresIn);
+        sessionStorage.setItem("expiresIn", expiresIn);
+        sessionStorage.setItem("status", status);
+        sessionStorage.setItem("userId", userId);
+        router.push("/dashboard");
       }
     } catch (error: any) {
-      // console.error(error.response.data.message);
-      // console.error(error.response);
       Swal.fire({
         icon: "error",
         title: "Error",
-        confirmButtonColor: "#1E90FF        ",
-        text: error.response.data.message,
-        // text: error.response.status,
+        confirmButtonColor: "#1E90FF",
+        text: error.response?.data?.message,
       });
       if (formRef.current) {
         formRef.current.reset();
       }
     }
-
-    // dispatch(REQ_LOGIN(data));
   };
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
-  const token = sessionStorage.getItem("token");
-  React.useEffect(() => {
+
+  useEffect(() => {
     if (token) {
       router.push("/dashboard");
     }
-  });
+  }, [token]);
+
   return (
-    <div className="container w-11/12 xl:w-4/12 mt-32 bg-white m-auto border border-t-gray-300 p-10 rounded-lg shadow-xl">
-      <h1 className="text-3xl text-center font-bold">Login</h1>
-      <form ref={formRef} onSubmit={handleSubmit(handleLogin)} className="mt-5">
-        <label className="">
-          {/* <span className="block font-semibold text-sm">Username</span> */}
-          <input
-            type="text"
-            className="w-full p-2 block  border border-sky-400 rounded-md outline-none"
-            placeholder="Username"
-            id="username"
-            {...register("username", loginOption.username)}
-          />
-        </label>
-        <div className=" w-full">
-          {errors?.username && (
-            <small className="text-red-500">{errors.username.message}</small>
-          )}
-        </div>
-        <label className="flex mt-4">
-          {/* <span className="block font-semibold mt-2 text-sm">Password</span> */}
-          <input
-            type={showPassword ? "text" : "password"}
-            id="password"
-            className="w-full p-2 block border outline-none border-r-0 border-sky-400 rounded-r-none rounded-md"
-            placeholder="Password"
-            {...register("password", loginOption.password)}
-          />
-          <span
-            onClick={handleTogglePassword}
-            className="border rounded-r-md border-l-0 border-sky-400 rounded-sm pt-2"
+    <div className="container w-11/12 sm:w-8/12 md:w-9/12 md:mt-32 xl:w-4/12 xl:mt-24 mt-7 bg-white m-auto border border-t-gray-300 p-10 rounded-lg shadow-xl">
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
+            <AccountCircleIcon fontSize="medium" />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+            ref={formRef}
           >
-            {showPassword ? (
-              <VisibilityOffIcon fontSize="small" className="mr-2" />
-            ) : (
-              <RemoveRedEyeIcon fontSize="small" className="mr-2" />
-            )}
-          </span>
-        </label>
-        <div className=" w-full">
-          {errors?.password && (
-            <small className="text-red-500">{errors.password.message}</small>
-          )}
-        </div>
-        <button className="mt-4 bg-sky-400 w-4/12 rounded-lg p-2 text-white ">
-          {/* <button className="mt-4 bg-sky-400 w-full rounded-lg p-2 text-white " > */}
-          Login
-        </button>
-      </form>
-      <div className="mt-4">
-        <p>
-          Need a new account ?
-          <Link
-            href="register"
-            className="text-blue-300 hover:text-blue-400 ml-1"
-          >
-            Click Me!
-          </Link>
-        </p>
-      </div>
+            <TextField
+              margin="normal"
+              fullWidth
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+              autoFocus
+              onChange={(e) => setusername(e.target.value)}
+              error={usernameError !== ""}
+              helperText={usernameError}
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              name="password"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              id="password"
+              autoComplete="current-password"
+              className="outline-none"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end" onClick={handleTogglePassword}>
+                    {showPassword ? (
+                      <VisibilityOffIcon
+                        fontSize="medium"
+                        className="mr-2 cursor-pointer transition-all"
+                      />
+                    ) : (
+                      <RemoveRedEyeIcon
+                        fontSize="medium"
+                        className="mr-2 cursor-pointer transition-all"
+                      />
+                    )}
+                  </InputAdornment>
+                ),
+              }}
+              onChange={(e) => setPassword(e.target.value)}
+              error={passwordError !== ""}
+              helperText={passwordError}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              className="mt-2 mb-5 bg-blue-500"
+            >
+              Sign In
+            </Button>
+            <Grid container>
+              <Grid item>
+                <Link href="/register" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+      </Container>
     </div>
   );
-};
-
-export default Login;
+}

@@ -1,16 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,
-    swcMinify: true,
-    images: {
-      domains: ["localhost"],
-    },
-    env: {
-      API_URL: "https://api.themoviedb.org/3/",
-      imageUser: "http://localhost:3001/users/image",
-      imageJob: "http://localhost:3001/jobhire/image",
-    }
-}
+  reactStrictMode: true,
+  swcMinify: true,
+  images: {
+    domains: ["localhost"],
+  },
+  env: {
+    API_URL: "http://103.175.219.184:8010",
+    endPoint: "http://103.175.219.184:8010/api/trx/todo",
+  },
+};
 // const withTM = require("next-transpile-modules")(["react-player"]);
 
 // module.exports = withTM({
@@ -48,5 +47,4 @@ const nextConfig = {
 //   },
 // });
 
-
-module.exports = nextConfig
+module.exports = nextConfig;

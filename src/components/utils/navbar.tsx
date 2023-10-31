@@ -47,15 +47,18 @@ const navbar = () => {
 
   const router = useRouter();
 
-  const token = sessionStorage.getItem("token");
-
   const handleLogout = () => {
     sessionStorage.clear();
     router.push("/");
   };
 
+  const token = sessionStorage.getItem("xtoken");
+  const expiresIn = sessionStorage.getItem("expiresIn");
   React.useEffect(() => {
     if (token === null) {
+      router.push("/");
+    }
+    if (expiresIn == null) {
       router.push("/");
     }
   }, []);
@@ -121,6 +124,9 @@ const navbar = () => {
                 <MenuItem onClick={() => router.push("/absensi")}>
                   <Typography textAlign="center">Absensi</Typography>
                 </MenuItem>
+                <MenuItem onClick={() => router.push("/table")}>
+                  <Typography textAlign="center">Table</Typography>
+                </MenuItem>
               </Menu>
             </Box>
             {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
@@ -165,8 +171,6 @@ const navbar = () => {
                 Absensi
               </Button>
               <Button
-                // key={page}
-                // onClick={() => router.push("/absensi")}
                 onClick={() => router.push("/table")}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
