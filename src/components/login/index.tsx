@@ -61,6 +61,9 @@ export default function SignIn() {
           text: "Berhasil Login",
           confirmButtonColor: "#00FA9A",
         });
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 100);
         // console.log(response);
         token = response.data.accessToken;
         expiresIn = response.data.expiresIn;
@@ -72,7 +75,6 @@ export default function SignIn() {
         sessionStorage.setItem("expiresIn", expiresIn);
         sessionStorage.setItem("status", status);
         sessionStorage.setItem("userId", userId);
-        router.push("/dashboard");
       }
     } catch (error: any) {
       Swal.fire({
@@ -92,10 +94,10 @@ export default function SignIn() {
   };
 
   useEffect(() => {
-    if (token) {
+    if (sessionStorage.getItem("xtoken")) {
       router.push("/dashboard");
     }
-  }, [token]);
+  }, []);
 
   return (
     <div className="container w-11/12 sm:w-8/12 md:w-9/12 md:mt-32 xl:w-4/12 xl:mt-24 mt-7 bg-white m-auto border border-t-gray-300 p-10 rounded-lg shadow-xl">

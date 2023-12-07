@@ -8,15 +8,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { format } from "date-fns";
 import Navbar from "@/components/utils/navbar";
-import ServerDay from "@/data/ServerDays";
+import ServerDay from "@/components/dashboard/ServerDays";
 import Activities from "@/components/dashboard/activities";
-import getAllDate from "@/storeZustend";
+
+import useDataStore from "@/storeGetDateRangeZustands";
 
 const Dashboard = () => {
-  const [highlightedDays, setHighlightedDays] = useState([]);
   const [dateChange, setDateChange]: any = useState();
   const [value, setValue]: any = useState<Dayjs | null>(dayjs(new Date()));
-
   const valueOnChange = format(new Date(value), "yyyy-MM-dd");
   const bulanOnchange = valueOnChange.substring(5, 7);
   const tahunOnChange = valueOnChange.substring(0, 4);
@@ -24,27 +23,15 @@ const Dashboard = () => {
   const firstDay = value.startOf("month").format("DD");
   const lastDay = value.endOf("month").format("DD");
 
-  const fecthData = () => {
-    axios
-      .get(
-        `${process.env.API_URL}/api/trx/todo/bydate/${tahunOnChange}-${bulanOnchange}-${firstDay}/${tahunOnChange}-${bulanOnchange}-${lastDay}`,
-        {
-          headers: {
-            xtoken: sessionStorage.getItem("xtoken"),
-          },
-        }
-      )
-      .then((response1) => {
-        const maping = response1.data.payload.map((data: any) => {
-          const datetodo = data.datetodo;
-          return parseInt(datetodo.substring(8, 10));
-        });
-        setHighlightedDays(maping);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  };
+  const {
+    loadingDelete,
+    loadingEdit,
+    highlightedDays,
+    loadingAdd,
+    loadingDateRange,
+    setDateFilter,
+    setChangeMonth,
+  } = useDataStore();
 
   const handleChangeMonth = (month: any) => {
     const bulanLama = format(new Date(month), "yyyy/MM/dd");
@@ -52,25 +39,8 @@ const Dashboard = () => {
     const bulan = bulanLama.substring(5, 7);
     const firstDay = month.startOf("month").format("DD");
     const lastDay = month.endOf("month").format("DD");
-    axios
-      .get(
-        `${process.env.API_URL}/api/trx/todo/bydate/${tahun}-${bulan}-${firstDay}/${tahun}-${bulan}-${lastDay}`,
-        {
-          headers: {
-            xtoken: sessionStorage.getItem("xtoken"),
-          },
-        }
-      )
-      .then((response1) => {
-        const maping = response1.data.payload.map((data: any) => {
-          const datetodo = data.datetodo;
-          return parseInt(datetodo.substring(8, 10));
-        });
-        setHighlightedDays(maping);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+
+    setChangeMonth(tahun, bulan, firstDay, lastDay);
   };
 
   const handleChangeDate = (date: any) => {
@@ -79,15 +49,21 @@ const Dashboard = () => {
     const valueOnChange = format(new Date(date), "yyyy-MM-dd");
     setDateChange(valueOnChange);
   };
-  const { dateTodo, refresh, getAll } = getAllDate();
-
-  console.log("klasjklajlsj", dateTodo);
 
   useEffect(() => {
-    fecthData();
+    setDateFilter(tahunOnChange, bulanOnchange, firstDay, lastDay);
+
     handleChangeDate(value);
-    getAll();
-  }, [refresh]);
+  }, [
+    tahunOnChange,
+    bulanOnchange,
+    firstDay,
+    lastDay,
+    loadingDateRange,
+    loadingAdd,
+    loadingDelete,
+    loadingEdit,
+  ]);
 
   return (
     <>

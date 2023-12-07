@@ -12,6 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
+import useDataStore from "@/storeGetDateRangeZustands";
 
 const DeleteModal = ({ open, handleClose, data }: any) => {
   const {
@@ -19,36 +20,13 @@ const DeleteModal = ({ open, handleClose, data }: any) => {
     formState: { errors },
     reset,
   } = useForm();
+  const { deleteDateTodo, loadingDelete, setDateFilter } = useDataStore();
 
-  const handleDelete = async () => {
-    try {
-      const response = await axios.delete(
-        `${process.env.API_URL}/api/trx/todo/${data.id}`,
-        {
-          headers: {
-            xtoken: sessionStorage.getItem("xtoken"),
-          },
-        }
-      );
-      if (response) {
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: `Berhasil Menghpus ${data.tittle}`,
-          confirmButtonColor: "#00FA9A",
-        });
-        handleClose();
-        reset();
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        confirmButtonColor: "#1E90FF",
-        text: `Gagal Menghapus`,
-      });
-    }
+  const handleDelete = () => {
+    deleteDateTodo(data.id);
+    handleClose();
   };
+
   return (
     <Dialog
       open={open}

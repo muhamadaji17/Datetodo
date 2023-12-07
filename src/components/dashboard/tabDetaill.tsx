@@ -24,9 +24,9 @@ const DetailTabComponent = (dataApi: any) => {
           {dataApi.dataApi.state === 1 ? (
             <p className="text-red-400">Belum</p>
           ) : dataApi.dataApi.state === 2 ? (
-            "Proses"
+            <p className="text-blue-500">Proses</p>
           ) : dataApi.dataApi.state === 3 ? (
-            "Selesai"
+            <p className="text-green-500">Selesai</p>
           ) : (
             "Status Tidak Diketahui"
           )}

@@ -6,42 +6,58 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import axios from "axios";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
+import useDataStore from "@/storeGetDateRangeZustands";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 
-const EditTabComponent = (dataApi: any) => {
+// const EditTabComponent = (dataApi: any, handleClose: any) => {
+const EditTabComponent = ({ dataApi, handleClose }: any) => {
+  console.log(handleClose);
   const [formData, setFormData] = useState({
-    tittle: dataApi.dataApi?.tittle || "",
-    datetodo: dataApi.dataApi?.datetodo || "",
-    description: dataApi.dataApi?.description || "",
-    state: dataApi.dataApi?.state || 1,
+    tittle: dataApi?.tittle || "",
+    datetodo: dataApi?.datetodo || "",
+    description: dataApi?.description || "",
+    state: dataApi?.state || 1,
   });
 
+  const { reset } = useForm();
+
+  const id = dataApi?.id;
+
+  const { setEditTodo } = useDataStore();
+
+  const router = useRouter();
+
   const handleEdit = async () => {
-    try {
-      const response = await axios.put(
-        `${process.env.API_URL}/api/trx/todo/${dataApi.dataApi.id}`,
-        formData,
-        {
-          headers: {
-            xtoken: sessionStorage.getItem("xtoken"),
-          },
-        }
-      );
-      if (response) {
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: `Berhasil Menghpus ${formData.tittle}`,
-          confirmButtonColor: "#00FA9A",
-        });
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        confirmButtonColor: "#1E90FF",
-        text: "Gagal Menghapus",
-      });
-    }
+    setEditTodo(formData, id);
+    handleClose();
+    reset();
+    // try {
+    //   const response = await axios.put(
+    //     `${process.env.API_URL}/api/trx/todo/${dataApi.dataApi.id}`,
+    //     formData,
+    //     {
+    //       headers: {
+    //         xtoken: sessionStorage.getItem("xtoken"),
+    //       },
+    //     }
+    //   );
+    //   if (response) {
+    //     Swal.fire({
+    //       icon: "success",
+    //       title: "Success",
+    //       text: `Berhasil Menghpus ${formData.tittle}`,
+    //       confirmButtonColor: "#00FA9A",
+    //     });
+    //   }
+    // } catch (error) {
+    //   Swal.fire({
+    //     icon: "error",
+    //     title: "Error",
+    //     confirmButtonColor: "#1E90FF",
+    //     text: "Gagal Menghapus",
+    //   });
+    // }
   };
 
   const handleChange = (e: any) => {

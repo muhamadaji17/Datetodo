@@ -50,3 +50,13 @@ input[type="number"] {
   border-radius: 10px;
   box-shadow: 0 0 10px rgb(59 130 246);
 }
+
+
+/* Sembunyikan tombol input file asli */
+input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  cursor: pointer;
+}

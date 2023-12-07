@@ -8,8 +8,11 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteModal from "@/components/dashboard/modalDelete";
 import AddModal from "./addModal";
 import ViewModal from "./viewModal";
+import dayjs from "dayjs";
+import idLocale from "dayjs/locale/id";
+import useDataStore from "@/storeGetDateRangeZustands";
 
-const Activities = (api: any, dateOri: any) => {
+const Activities = ({ api, dateOri }: any) => {
   const [deleteDate, setDeleteDate] = useState("");
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [view, setView] = useState("");
@@ -17,20 +20,6 @@ const Activities = (api: any, dateOri: any) => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [addDate, setAddDate] = useState("");
   const [dataApi, setDataApi]: any = useState([]);
-  const fectData = () => {
-    axios
-      .get(`${process.env.API_URL}/api/trx/todo/by?datetodo=${api.api}`, {
-        headers: {
-          xtoken: sessionStorage.getItem("xtoken"),
-        },
-      })
-      .then((response1) => {
-        setDataApi(response1.data.payload);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  };
 
   const handleDeleteClick = (date: any) => {
     setDeleteDate(date);
@@ -47,18 +36,26 @@ const Activities = (api: any, dateOri: any) => {
     setAddModalOpen(true);
   };
 
+  const {
+    loadingDelete,
+    loadingEdit,
+    dataByYear,
+    loadingAdd,
+    loadingDateRange,
+    setGetBy,
+  } = useDataStore();
   useEffect(() => {
-    fectData();
-  }, [api]);
+    setGetBy(api);
+  }, [api, loadingDelete, loadingEdit, loadingAdd, loadingDateRange]);
   return (
     <div className="mb-10">
       <div className="w-11/12 rounded-md bg-blue-500 h-8 rounded-b-none sm:mt-2">
-        <h1 className="pt-1 font-bold ml-2">Avtivities for {api.api}</h1>
+        <h1 className="pt-1  ml-2 text-white">Avtivities for {api}</h1>
       </div>
       <div className="bg-slate-100 w-11/12 rounded-md rounded-t-none text-start p-2">
         <ul>
-          {dataApi && dataApi?.length > 0 ? (
-            dataApi?.map((data: any) => (
+          {dataByYear && dataByYear?.length > 0 ? (
+            (dataByYear || [])?.map((data: any) => (
               <li className="flex flex-wrap mb-2" key={data.id}>
                 <div className="mt-1 text-sm">{data.tittle}</div>
                 <div className="flex ml-auto">
@@ -90,8 +87,11 @@ const Activities = (api: any, dateOri: any) => {
       </div>
       <div className="mb-10">
         <div className="w-11/12 rounded-md bg-blue-500 h-8 rounded-t-none">
-          <h1 className="pt-1 ml-2 font-bold">
-            <button onClick={() => handleAddActivity(api.api)}>
+          <h1 className="pt-1 ml-2 ">
+            <button
+              onClick={() => handleAddActivity(api)}
+              className="text-white"
+            >
               Add More Activity
               <AddCircleOutlineIcon
                 className="text-green-500 ml-2"
